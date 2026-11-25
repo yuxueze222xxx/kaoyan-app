@@ -1,0 +1,1 @@
+[['function chapText(t){var m=String(t.meta||'').match(/第[一二三四五六七八九十百]+章[^·]*/);return m?m[0].slice(0,24):'其他单元'}','function chapText(t){var m=String(t.meta||'').match(/第[一二三四五六七八九十百]+章[^·]*/);return m?m[0].replace(/\s+/g,'').slice(0,26):'其他单元'}'],['window.DX_APP_VERSION = 2026111915;','window.DX_APP_VERSION = 2026111916;'],['v2026.11.19.15','v2026.11.19.16']]
