@@ -1,0 +1,18 @@
+<script>/* 考察顺序：随机 / 章节顺序 */
+(function(){
+var K='dx_order_mode',M='random';
+try{if(localStorage.getItem(K)==='chapter')M='chapter'}catch(e){}
+function card(k){var id=String(k||'').split(':')[2]||'',cs=window.CARDS||[];for(var i=0;i<cs.length;i++)if(cs[i].id===id)return{c:cs[i],i:i};return null}
+function rk(k){if(String(k).indexOf('plan:sports:')!==0)return 10;var c=card(k);if(!c)return 9;var s=String(c.c.subject||'');return s.indexOf('学校体育')>=0?0:(s.indexOf('运动训练')>=0?1:(s.indexOf('运动生理')>=0?2:3))}
+function cp(k){var c=card(k);if(!c)return 999;var m=String(c.c.chapter||'').match(/第([一二三四五六七八九十]+)章/);if(!m)return 999;var t=m[1],d={一:1,二:2,三:3,四:4,五:5,六:6,七:7,八:8,九:9},n=0,u=0,i,ch;for(i=0;i<t.length;i++){ch=t[i];if(ch==='十'){n+=(u||1)*10;u=0}else if(d[ch])u=d[ch]}return (n+u)||999}
+function si(k){var c=card(k);return c?c.i:0}
+function sortKeys(keys){if(M!=='chapter')return keys.slice();var a=keys.map(function(k,i){return{k:k,i:i,r:rk(k),c:cp(k),s:si(k)}});a.sort(function(x,y){return x.r-y.r||x.c-y.c||x.s-y.s||x.i-y.i});return a.map(function(z){return z.k})}
+window.__dxSortKeys=sortKeys;
+window.__dxOrderMode=function(n){if(n){M=(n==='chapter'?'chapter':'random');try{localStorage.setItem(K,M)}catch(e){}}return M};
+function resort(){var S=window.__PLAN_SESSION;if(!S)return;var cur=S.keys[S.idx];S.keys=sortKeys(S.keys);var j=S.keys.indexOf(cur);if(j>=0)S.idx=j}
+var PS=window.__planStart;
+if(PS)window.__planStart=function(){PS.apply(this,arguments);var S=window.__PLAN_SESSION;if(!S||M!=='chapter')return;if(arguments[0]){resort()}else{S.keys=sortKeys(S.keys);S.idx=0}if(window.planOpen)window.planOpen(S.keys[S.idx])};
+var ST=window.startToday;
+if(ST)window.startToday=function(){if(M!=='chapter'||!window.__planStart)return ST.apply(this,arguments);window.__planStart()};
+})();
+</script></body>
